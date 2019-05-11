@@ -37,6 +37,8 @@ PYTHONUNBUFFERED=1 python main.py path/to/file.csv
 
 ### Options
 - `-t` `--threshold` - Requests per second considered to be high traffic.
+- `-i` `--log_interval` - Number of seconds to collect logs before printing a summary.
+- `-w` `--log_window` - Number of seconds to look back when checking for high traffic.
 
 ## Known Bugs
 

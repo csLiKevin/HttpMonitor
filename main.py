@@ -9,13 +9,17 @@ def run():
     """
     argument_parser = ArgumentParser()
     argument_parser.add_argument("log_file", help="path to your log file")
+    argument_parser.add_argument("-i", "--log_interval", default=10, help="how often summarize logs", type=float)
+    argument_parser.add_argument("-w", "--log_window", default=120, help="time window for alerts", type=float)
     argument_parser.add_argument("-t", "--threshold", default=10, help="requests per second threshold", type=float)
     args = argument_parser.parse_args()
 
     log_file = args.log_file
+    log_interval = args.log_interval
+    log_window = args.log_window
     threshold = args.threshold
 
-    monitor = HttpMonitor(log_file, threshold, 10, 120)
+    monitor = HttpMonitor(log_file, threshold, log_interval, log_window)
     monitor.start()
 
 

@@ -15,6 +15,8 @@ class HttpMonitor(object):
         Constructor
         :param log_file: Path to a log file.
         :param threshold: Requests per second considered to be high traffic.
+        :param log_interval: Number of seconds to collect logs before printing a summary.
+        :param log_window: Number of seconds to look back when checking for high traffic.
         """
         self.log_file = log_file
         self.log_interval = log_interval
