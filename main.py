@@ -15,7 +15,7 @@ def run():
     log_file = args.log_file
     threshold = args.threshold
 
-    monitor = HttpMonitor(log_file, threshold)
+    monitor = HttpMonitor(log_file, threshold, 10, 120)
     monitor.start()
 
 

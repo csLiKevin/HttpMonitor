@@ -1,6 +1,6 @@
 from collections import defaultdict
 from csv import DictReader
-from time import sleep
+import time
 
 from utils import print_info, print_warning, print_error, print_success
 
@@ -10,14 +10,17 @@ class HttpMonitor(object):
     Class responsible for reading a log file and printing information about it as it processes through it.
     """
 
-    def __init__(self, log_file, threshold):
+    def __init__(self, log_file, threshold, log_interval, log_window):
         """
         Constructor
         :param log_file: Path to a log file.
         :param threshold: Requests per second considered to be high traffic.
         """
         self.log_file = log_file
+        self.log_interval = log_interval
+        self.log_window = log_window
         self.threshold = threshold
+        self.high_traffic = False
 
     @classmethod
     def get_request_section(cls, request):
@@ -32,7 +35,7 @@ class HttpMonitor(object):
         return f"/{section}"
 
     @classmethod
-    def read_logs(cls, reader, seconds=10):
+    def read_logs(cls, reader, seconds):
         """
         Read lines until the specified number of seconds has passed.
 
@@ -74,29 +77,28 @@ class HttpMonitor(object):
         with open(self.log_file) as log_file:
             reader = DictReader(log_file)
 
-            high_traffic = False
-            # Keep track of the number of requests in the last two minutes.
+            # Keep track of the number of requests in the log window.
             request_counts = []
             while True:
                 try:
-                    timestamp, average_bytes, most_hit_section, count = self.read_logs(reader)
+                    timestamp, average_bytes, most_hit_section, count = self.read_logs(reader, self.log_interval)
                     print_info(f"{timestamp}\t{average_bytes:.2f}\t{most_hit_section}")
 
                     request_counts.append(count)
-                    # Only keep the last 12 counts because each count represents 10 seconds.
-                    request_counts = request_counts[-12:]
-                    requests_per_second = sum(request_counts) / 120
+                    # Only keep enough counts to cover the time in the log window.
+                    request_counts = request_counts[-(self.log_window // self.log_interval):]
+                    requests_per_second = sum(request_counts) / self.log_window
 
                     # Check if the requests per second has exceeded or recovered from the traffic threshold.
-                    if requests_per_second >= self.threshold and high_traffic is False:
-                        print_error("High traffic detected.")
-                        high_traffic = True
-                    elif requests_per_second < self.threshold and high_traffic is True:
-                        print_success("Traffic has stabilized.")
-                        high_traffic = False
+                    if requests_per_second >= self.threshold and self.high_traffic is False:
+                        print_error(f"High traffic detected. Requests / Second: {requests_per_second:.2f}")
+                        self.high_traffic = True
+                    elif requests_per_second < self.threshold and self.high_traffic is True:
+                        print_success(f"Traffic has stabilized. Requests / Second: {requests_per_second:.2f}")
+                        self.high_traffic = False
 
-                    # Simulate 10 seconds of time passing. DO NOT USE for real access logs.
-                    sleep(10)
+                    # Simulate time passing. DO NOT USE for real access logs.
+                    time.sleep(self.log_interval)
                 except StopIteration:
                     print_warning("End of file has been reached.")
-                    exit()
+                    break
