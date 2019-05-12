@@ -13,6 +13,7 @@ class HttpMonitor(object):
     def __init__(self, log_file, threshold, log_interval, log_window):
         """
         Constructor
+
         :param log_file: Path to a log file.
         :param threshold: Requests per second considered to be high traffic.
         :param log_interval: Number of seconds to collect logs before printing a summary.

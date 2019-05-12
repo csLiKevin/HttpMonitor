@@ -50,9 +50,9 @@ PYTHONUNBUFFERED=1 python main.py path/to/file.csv
 
 ## Next steps
 
-1. Make the frequency of the summary statistics configurable.
-2. Add better error handling. Currently the program expects the information in the csv to be formatted like the sample csv and will raise an exception if the input deviates.
-3. Real log files are continuously growing. This program needs to be updated to wait for more logs to be written when it reaches the end of the log file.
+1. Add better error handling. Currently the program expects the information in the csv to be formatted like the sample csv and will raise an exception if the input deviates.
+2. Real log files are continuously growing. This program needs to be updated to wait for more logs to be written when it reaches the end of the log file.
+3. Add more unit tests.
 4. In a production scenario, the monitor would be started in the background and the results would only be checked occasionally indirectly.
     - Instead of printing to the terminal, it should print to a more permanent store so a web interface can display the information.
     - Graph of the number of requests per second over time.
