@@ -93,10 +93,12 @@ class HttpMonitor(object):
 
                     # Check if the requests per second has exceeded or recovered from the traffic threshold.
                     if requests_per_second >= self.threshold and self.high_traffic is False:
-                        print_error(f"High traffic detected. Requests / Second: {requests_per_second:.2f}")
+                        print_error(f"High traffic generated an alert - hits = {requests_per_second:.2f} requests per "
+                                    f"second, triggered at {timestamp}")
                         self.high_traffic = True
                     elif requests_per_second < self.threshold and self.high_traffic is True:
-                        print_success(f"Traffic has stabilized. Requests / Second: {requests_per_second:.2f}")
+                        print_success(f"Traffic has stabilized - hits = {requests_per_second:.2f} requests per second, "
+                                      f"recovered at {timestamp}")
                         self.high_traffic = False
 
                     # Simulate time passing. DO NOT USE for real access logs.

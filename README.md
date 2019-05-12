@@ -5,9 +5,12 @@ Console program that tails a csv-encoded HTTP access log.
 - An alert message is printed when average traffic in the last two minutes exceeds a threshold.
 - A message is printed when traffic drops below the threshold.
 
+![High Traffic Alert](./images/alert.png)
+![Recovered from High Traffic](./images/recover.png)
+
 ## Setup
 
-1. Create and activate a virtual environment.
+1. Create a virtual environment and activate it.
 2. Install dependencies.
     ```bash
     pip install -r requirements.txt
@@ -47,7 +50,15 @@ PYTHONUNBUFFERED=1 python main.py path/to/file.csv
 
 ## Next steps
 
-1. When checking if the average traffic has reached the threshold, make the amount of seconds the program looks at configurable.
-2. Make the frequency of the summary statistics configurable.
-3. Add better error handling. Currently the program expects the information in the csv to be formatted like the sample csv and will raise an exception if the input deviates.
-4. Real log files are continuously growing. This program needs to be updated to wait for more logs to be written when it reaches the end of the log file.
+1. Make the frequency of the summary statistics configurable.
+2. Add better error handling. Currently the program expects the information in the csv to be formatted like the sample csv and will raise an exception if the input deviates.
+3. Real log files are continuously growing. This program needs to be updated to wait for more logs to be written when it reaches the end of the log file.
+4. In a production scenario, the monitor would be started in the background and the results would only be checked occasionally indirectly.
+    - Instead of printing to the terminal, it should print to a more permanent store so a web interface can display the information.
+    - Graph of the number of requests per second over time.
+    - A count of the number of 500 errors.
+
+### Scaling
+
+1. This program needs to be able to monitor multiple logs from multiple servers.
+2. For production logging, occasionally the log files get rotated. This program needs a way to detect this and open the new file.
